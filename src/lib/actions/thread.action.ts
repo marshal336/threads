@@ -36,3 +36,197 @@ export async function createThread({
     throw new Error(`Failed to create thread: ${error.message}`);
   }
 }
+
+export async function fetchPosts(pageNumber = 1, pageSize = 20) {
+  // Сколько пропустить
+  const skipAmount = (pageNumber - 1) * pageSize;
+
+  // Получаем посты (только top-level: без parentId)
+  const posts = await prisma.thread.findMany({
+    where: {
+      parentId: null, // эквивалент { $in: [null, undefined] }
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    skip: skipAmount,
+    take: pageSize,
+    include: {
+      author: true,      // Подтягиваем автора
+      community: true,   // Подтягиваем комьюнити
+      children: {
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+
+  const totalPostsCount = await prisma.thread.count({
+    where: { parentId: null },
+  });
+
+  const isNext = totalPostsCount > skipAmount + posts.length;
+
+  return { posts, isNext };
+}
+async function fetchAllChildThreads(threadId: string): Promise<string[]> {
+  const children = await prisma.thread.findMany({
+    where: { parentId: threadId },
+    select: { id: true },
+  });
+
+  let allChildIds: string[] = children.map(c => c.id);
+
+  for (const child of children) {
+    const descendants = await fetchAllChildThreads(child.id);
+    allChildIds.push(...descendants);
+  }
+
+  return allChildIds;
+}
+
+export async function deleteThread(id: string, path: string): Promise<void> {
+  try {
+    // Найти основной тред с авторами и сообществом
+    const mainThread = await prisma.thread.findUnique({
+      where: { id },
+      include: { author: true, community: true },
+    });
+
+    if (!mainThread) throw new Error("Thread not found");
+
+    // Получаем все дочерние треды рекурсивно
+    const descendantThreadIds = [id, ...(await fetchAllChildThreads(id))];
+
+    // Удаляем треды
+    await prisma.thread.deleteMany({
+      where: { id: { in: descendantThreadIds } },
+    });
+
+    // Обновляем пользователей (отвязать треды)
+    if (mainThread.author) {
+      await prisma.user.update({
+        where: { id: mainThread.author.id },
+        data: {
+          threads: {
+            disconnect: descendantThreadIds.map((tid) => ({ id: tid })),
+          },
+        },
+      });
+    }
+
+    // Обновляем сообщества (отвязать треды)
+    if (mainThread.community) {
+      await prisma.community.update({
+        where: { id: mainThread.community.id },
+        data: {
+          threads: {
+            disconnect: descendantThreadIds.map((tid) => ({ id: tid })),
+          },
+        },
+      });
+    }
+
+    // Сброс кэша страницы
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to delete thread: ${error.message}`);
+  }
+}
+
+export async function fetchThreadById(threadId: string) {
+  try {
+    const thread = await prisma.thread.findUnique({
+      where: { id: threadId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+        community: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+        children: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            children: {
+              include: {
+                author: {
+                  select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return thread;
+  } catch (err) {
+    console.error("Error while fetching thread:", err);
+    throw new Error("Unable to fetch thread");
+  }
+}
+
+
+export async function addCommentToThread(
+  threadId: string,
+  commentText: string,
+  userId: string,
+  path: string
+) {
+  try {
+    // проверяем что родительский тред существует
+    const originalThread = await prisma.thread.findUnique({
+      where: { id: threadId },
+    });
+
+    if (!originalThread) {
+      throw new Error("Thread not found");
+    }
+
+    // создаём новый комментарий и связываем с родительским
+    const commentThread = await prisma.thread.create({
+      data: {
+        text: commentText,
+        author: { connect: { id: userId } },
+        parent: { connect: { id: threadId } }, // связь с родителем
+      },
+    });
+
+    // в Prisma children обновлять вручную не надо,
+    // связь parent/children работает автоматически
+
+    revalidatePath(path);
+
+    return commentThread;
+  } catch (err) {
+    console.error("Error while adding comment:", err);
+    throw new Error("Unable to add comment");
+  }
+}

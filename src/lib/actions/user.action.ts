@@ -44,6 +44,7 @@ export async function fetchUser(userId: string) {
       where: { id: userId },
       include: {
         communities: true,
+        threads: true
       },
     });
   } catch (error: any) {
