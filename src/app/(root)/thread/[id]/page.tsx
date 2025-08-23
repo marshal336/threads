@@ -11,8 +11,8 @@ export const revalidate = 0;
 
 export async function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params; // 👈 деструктурим после await
-
   if (!id) return null;
+  
   const post = await fetchThreadById(id);
   if (!post) return null;
 
@@ -20,8 +20,8 @@ export async function page({ params }: { params: Promise<{ id: string }> }) {
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);
-  if (!userInfo?.onboarded) redirect("/onboarding");
-
+  if (!userInfo?.onboarded) redirect("/onboard");
+  
   return (
     <section className="relative">
       <div>
@@ -47,15 +47,15 @@ export async function page({ params }: { params: Promise<{ id: string }> }) {
       </div>
 
       <div className="mt-10">
-        {post.children.map((childItem: any) => (
+        {post.children.map((childItem) => (
           <ThreadCard
-            key={childItem._id}
-            id={childItem._id}
+            key={childItem.id}
+            id={childItem.id}
             currentUserId={user.id}
             parentId={childItem.parentId}
             text={childItem.text}
             author={childItem.author}
-            community={childItem.community}
+            community={post.community}
             createdAt={childItem.createdAt}
             children={childItem.children}
             isComment

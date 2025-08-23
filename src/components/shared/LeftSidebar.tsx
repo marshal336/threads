@@ -21,9 +21,10 @@ export default function LeftSidebar({ className }: ILeftSidebarProps) {
           const isActive =
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
-          if (link.route === "/profile" && userId) link.route = `${link.route}/${userId}`;
+          if (link.route === "/profile" && userId)
+            link.route = `${link.route}/${userId}`;
           return (
-            <div className="">
+            <div className="" key={link.label}>
               <Link
                 className={`relative flex ${
                   isActive && "bg-[#877EFF]"

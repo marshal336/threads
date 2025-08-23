@@ -39,7 +39,7 @@ interface FetchPostsResult {
       name: string;
       image: string | null;
     };
-  }[]
+  }[];
   isComment?: boolean;
 }
 
@@ -57,7 +57,7 @@ function ThreadCard({
   return (
     <article
       className={`flex w-full flex-col rounded-xl ${
-        isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
+        isComment ? "px-0 sm:px-7" : "bg-[#121417] p-7"
       }`}
     >
       <div className="flex items-start justify-between">
@@ -121,11 +121,28 @@ function ThreadCard({
               </div>
 
               {isComment && children && children.length > 0 && (
-                <Link href={`/thread/${id}`}>
-                  <p className="mt-1 text-subtle-medium text-[#697C89]">
-                    {children.length} repl{children.length > 1 ? "ies" : "y"}
-                  </p>
-                </Link>
+                <div className="">
+                  <div className="ml-1 mt-3 flex items-center gap-2">
+                    {children.slice(0, 2).map((comment, index) => (
+                      <Image
+                        src={comment.author.image ?? "/assets/profile.svg"}
+                        alt={`user_${comment.author.id}`}
+                        width={24}
+                        height={24}
+                        className={`${
+                          index !== 0 && "-ml-5"
+                        } rounded-full object-cover`}
+                      />
+                    ))}
+
+                    <Link href={`/thread/${id}`}>
+                      <p className="mt-1 leading-4 font-medium text-gray-1">
+                        {children.length} repl
+                        {children.length > 1 ? "ies" : "y"}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -144,7 +161,7 @@ function ThreadCard({
         <div className="ml-1 mt-3 flex items-center gap-2">
           {children.slice(0, 2).map((comment, index) => (
             <Image
-              key={comment.author.id}
+              key={comment.id}
               src={comment.author.image ?? "/assets/profile.svg"}
               alt={`user_${comment.author.id}`}
               width={24}

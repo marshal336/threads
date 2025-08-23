@@ -160,3 +160,41 @@ export async function fetchUsers({
     throw error;
   }
 }
+
+
+export async function getActivity(userId: string) {
+  try {
+    // 1. Находим все треды, созданные пользователем
+    const userThreads = await prisma.thread.findMany({
+      where: { authorId: userId },
+      select: { id: true, children: true }, // children — это relation
+    });
+
+    // 2. Собираем все id детей (ответов)
+    const childThreadIds = userThreads.flatMap(thread =>
+      thread.children.map(child => child.id)
+    );
+
+    if (childThreadIds.length === 0) {
+      return [];
+    }
+
+    // 3. Находим сами ответы, исключая те, что написал тот же user
+    const replies = await prisma.thread.findMany({
+      where: {
+        id: { in: childThreadIds },
+        authorId: { not: userId },
+      },
+      include: {
+        author: {
+          select: { id: true, name: true, image: true },
+        },
+      },
+    });
+
+    return replies;
+  } catch (error) {
+    console.error("Error fetching replies:", error);
+    throw error;
+  }
+}
