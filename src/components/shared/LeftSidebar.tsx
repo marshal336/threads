@@ -1,6 +1,6 @@
 "use client";
 import { sidebarLinks } from "@/constants";
-import { SignedIn, SignOutButton } from "@clerk/nextjs";
+import { SignedIn, SignOutButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ interface ILeftSidebarProps {
 export default function LeftSidebar({ className }: ILeftSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { userId } = useAuth();
 
   return (
     <section className="custom-scrollbar sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r border-r-[#1F1F22] bg-[#121417] pb-5 pt-28 max-md:hidden">
@@ -20,8 +21,9 @@ export default function LeftSidebar({ className }: ILeftSidebarProps) {
           const isActive =
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
+          if (link.route === "/profile" && userId) link.route = `${link.route}/${userId}`;
           return (
-            <div key={link.route} className="">
+            <div className="">
               <Link
                 className={`relative flex ${
                   isActive && "bg-[#877EFF]"

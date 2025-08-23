@@ -26,7 +26,7 @@ interface FetchPostsResult {
     image?: string | null;
   } | null;
 
-  children: {
+  children?: {
     id: string;
     text: string;
     createdAt: Date;
@@ -120,7 +120,7 @@ function ThreadCard({
                 />
               </div>
 
-              {isComment && children.length > 0 && (
+              {isComment && children && children.length > 0 && (
                 <Link href={`/thread/${id}`}>
                   <p className="mt-1 text-subtle-medium text-[#697C89]">
                     {children.length} repl{children.length > 1 ? "ies" : "y"}
@@ -140,7 +140,7 @@ function ThreadCard({
         />
       </div>
 
-      {!isComment && children.length > 0 && (
+      {!isComment && children && children.length > 0 && (
         <div className="ml-1 mt-3 flex items-center gap-2">
           {children.slice(0, 2).map((comment, index) => (
             <Image
