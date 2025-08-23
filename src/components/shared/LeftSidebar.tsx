@@ -5,11 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-interface ILeftSidebarProps {
-  className?: string;
-}
 
-export default function LeftSidebar({ className }: ILeftSidebarProps) {
+
+export default function LeftSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { userId } = useAuth();

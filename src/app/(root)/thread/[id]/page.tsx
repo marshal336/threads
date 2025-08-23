@@ -7,12 +7,11 @@ import { fetchUser } from "@/lib/actions/user.action";
 import { fetchThreadById } from "@/lib/actions/thread.action";
 import Comment from "@/components/forms/Comment";
 
-export const revalidate = 0;
 
-export async function page({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params; // 👈 деструктурим после await
+export default async function ThreadPage({ params,}: { params: Promise<{ id: string }>}) {
+  const { id } = await params; 
   if (!id) return null;
-  
+
   const post = await fetchThreadById(id);
   if (!post) return null;
 
@@ -21,7 +20,7 @@ export async function page({ params }: { params: Promise<{ id: string }> }) {
 
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboard");
-  
+
   return (
     <section className="relative">
       <div>
@@ -65,5 +64,3 @@ export async function page({ params }: { params: Promise<{ id: string }> }) {
     </section>
   );
 }
-
-export default page;

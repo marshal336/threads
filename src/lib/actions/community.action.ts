@@ -1,4 +1,4 @@
-'use server'
+"use server";
 import { prisma } from "../pg";
 
 export async function createCommunity(
@@ -133,7 +133,7 @@ export async function fetchCommunities({
       orderBy: { createdAt: sortBy },
       skip: skipAmount,
       take: pageSize,
-      include: { members: true }, // аналог populate
+      include: { members: { select: { image: true } } }, // аналог populate
     });
 
     const totalCommunitiesCount = await prisma.community.count({

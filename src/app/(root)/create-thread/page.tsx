@@ -4,11 +4,7 @@ import { fetchUser } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 import PostThread from "@/components/forms/PostThread";
 
-interface IPageProps {
-  className?: string;
-}
-
-export default async function Page({ className }: IPageProps) {
+export default async function Page() {
   const user = await currentUser();
   if (!user) return null;
 

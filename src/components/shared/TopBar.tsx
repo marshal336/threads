@@ -3,11 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { dark } from "@clerk/themes";
 
-interface ITopBarProps {
-  className?: string;
-}
 
-export default function TopBar({ className }: ITopBarProps) {
+
+export default function TopBar() {
   return (
     <nav className="fixed top-0 z-30 flex w-full items-center justify-between bg-[#121417] px-6 py-3">
       <Link href={"/"} className="flex items-center gap-4">
