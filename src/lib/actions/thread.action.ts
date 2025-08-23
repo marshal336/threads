@@ -95,10 +95,10 @@ async function fetchAllChildThreads(threadId: string): Promise<string[]> {
 
 export async function deleteThread(id: string, path: string): Promise<void> {
   try {
-    // Найти основной тред с авторами и сообществом
+    // Найти основной тред
     const mainThread = await prisma.thread.findUnique({
       where: { id },
-      include: { author: true, community: true },
+      include: { children: true },
     });
 
     if (!mainThread) throw new Error("Thread not found");
@@ -111,36 +111,13 @@ export async function deleteThread(id: string, path: string): Promise<void> {
       where: { id: { in: descendantThreadIds } },
     });
 
-    // Обновляем пользователей (отвязать треды)
-    if (mainThread.author) {
-      await prisma.user.update({
-        where: { id: mainThread.author.id },
-        data: {
-          threads: {
-            disconnect: descendantThreadIds.map((tid) => ({ id: tid })),
-          },
-        },
-      });
-    }
-
-    // Обновляем сообщества (отвязать треды)
-    if (mainThread.community) {
-      await prisma.community.update({
-        where: { id: mainThread.community.id },
-        data: {
-          threads: {
-            disconnect: descendantThreadIds.map((tid) => ({ id: tid })),
-          },
-        },
-      });
-    }
-
     // Сброс кэша страницы
     revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to delete thread: ${error.message}`);
   }
 }
+
 
 export async function fetchThreadById(threadId: string) {
   try {
