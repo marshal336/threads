@@ -32,7 +32,7 @@ function Pagination({ pageNumber, isNext, path }: Props) {
   if (!isNext && pageNumber === 1) return null;
 
   return (
-    <div className="pagination">
+    <div className="mt-10 flex w-full items-center justify-center gap-5">
       <Button
         onClick={() => handleNavigation("prev")}
         disabled={pageNumber === 1}

@@ -22,8 +22,8 @@ async function Page({
   const result = await fetchUsers({
     userId: user.id,
     searchString: sP.q,
-    pageNumber: sP?.page ? +sP.page : 1,
-    pageSize: 25,
+    pageNumber: sP.page ? +sP.page : 1,
+    pageSize: 8,
   });
 
   return (

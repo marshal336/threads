@@ -40,7 +40,7 @@ export default async function ThreadPage({ params,}: { params: Promise<{ id: str
       <div className="mt-7">
         <Comment
           threadId={id}
-          currentUserImg={user.imageUrl}
+          currentUserImg={userInfo.image ?? user.imageUrl}
           currentUserId={JSON.stringify(userInfo.id)}
         />
       </div>

@@ -6,8 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
-
+    "lint": "next lint",
+    "prisma:seed": "prisma generate && prisma db seed"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.2",
@@ -30,6 +33,7 @@
     "svix": "^1.74.1",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
+    "ts-node": "^10.9.2",
     "uploadthing": "^7.7.4",
     "zod": "^4.0.17"
   },

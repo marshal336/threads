@@ -1,11 +1,13 @@
-import { OrganizationSwitcher, SignedIn, SignOutButton } from "@clerk/nextjs";
+'use client'
+import { OrganizationSwitcher, SignedIn, SignOutButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { dark } from "@clerk/themes";
-
-
+import { Button } from "../ui/button";
 
 export default function TopBar() {
+  const {isSignedIn} = useAuth()
+    
   return (
     <nav className="fixed top-0 z-30 flex w-full items-center justify-between bg-[#121417] px-6 py-3">
       <Link href={"/"} className="flex items-center gap-4">
@@ -31,14 +33,20 @@ export default function TopBar() {
           </SignedIn>
         </div>
 
-        <OrganizationSwitcher
-          appearance={{
-            theme: dark,
-            elements: {
-              organizationSwitcherTriggerText: "",
-            },
-          }}
-        />
+        {isSignedIn ? (
+          <OrganizationSwitcher
+            appearance={{
+              theme: dark,
+              elements: {
+                organizationSwitcherTriggerText: "",
+              },
+            }}
+          />
+        ) : (
+          <Link href={'/sign-in'}>
+            <Button className="bg-[#877EFF]">Sign-In</Button>
+          </Link>
+        )}
       </div>
     </nav>
   );
