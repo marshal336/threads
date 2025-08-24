@@ -34,7 +34,7 @@ interface IAccountProfileProps {
   btnTitle: string;
 }
 
-export default function AccountProfile({ user }: IAccountProfileProps) {
+export default function AccountProfile({ user, btnTitle }: IAccountProfileProps) {
   const [files, setFiles] = useState<File[]>([]);
   const { startUpload } = useUploadThing("media");
   const router = useRouter();
@@ -199,7 +199,7 @@ export default function AccountProfile({ user }: IAccountProfileProps) {
         />
 
         <Button type="submit" className="bg-[#877EFF]">
-          Submit
+          {btnTitle}
         </Button>
       </form>
     </Form>

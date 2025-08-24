@@ -7,7 +7,7 @@ async function Page() {
   const user = await currentUser();
   if(!user) return null
 
-  const userInfo = await fetchUser(user?.id);
+  const userInfo = await fetchUser(user.id);
   if(!userInfo) return null
 
   const userData = {
@@ -22,7 +22,7 @@ async function Page() {
     <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20">
       <p className="mt-3 text-base ">Onboard</p>
       <section className="mt-9 bg-[#121417] p-10">
-        <AccountProfile user={userData} btnTitle=""/>
+        <AccountProfile user={userData} btnTitle="Continue"/>
       </section>
     </main>
   );

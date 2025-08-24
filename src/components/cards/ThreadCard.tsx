@@ -136,7 +136,7 @@ function ThreadCard({
                     ))}
 
                     <Link href={`/thread/${id}`}>
-                      <p className="mt-1 leading-4 font-medium text-gray-1">
+                      <p className="mt-1 leading-4 font-medium text-[#697C89]">
                         {children.length} repl
                         {children.length > 1 ? "ies" : "y"}
                       </p>
@@ -171,7 +171,7 @@ function ThreadCard({
           ))}
 
           <Link href={`/thread/${id}`}>
-            <p className="mt-1 leading-4 font-medium text-gray-1">
+            <p className="mt-1 leading-4 font-medium text-[#697C89]">
               {children.length} repl{children.length > 1 ? "ies" : "y"}
             </p>
           </Link>
@@ -183,13 +183,13 @@ function ThreadCard({
           href={`/communities/${community.id}`}
           className="mt-5 flex items-center"
         >
-          <p className="leading-4 font-medium text-gray-[#697C89]">
+          <p className="leading-4 font-medium text-[#697C89]">
             {formatDateString(String(createdAt))}
             {community && ` - ${community.name} Community`}
           </p>
 
           <Image
-            src={community.image ?? "/assets/profile.svg"}
+            src={community.image ?? ""}
             alt={community.name}
             width={14}
             height={14}

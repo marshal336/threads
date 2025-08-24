@@ -12,13 +12,16 @@ interface Props {
 }
 
 async function ThreadsTab({ currentUserId, accountId, accountType }: Props) {
-  let result = await fetchUserPosts(accountId);
-  if (!result) {
-    redirect("/");
+  let result: any;
+  if (accountType === "Community") {
+    result = await fetchCommunityPosts(accountId);
+  } else {
+    result = await fetchUserPosts(accountId);
   }
 
   return (
     <section className="mt-9 flex flex-col gap-10">
+      {/* @ts-ignore */}
       {result.threads.map((thread) => (
         <ThreadCard
           key={thread.id}

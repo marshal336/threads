@@ -35,7 +35,7 @@ export default function TopBar() {
           appearance={{
             theme: dark,
             elements: {
-              organizationSwitcherTriggerText: "!hidden ",
+              organizationSwitcherTriggerText: "",
             },
           }}
         />

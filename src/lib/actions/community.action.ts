@@ -49,6 +49,7 @@ export async function fetchCommunityDetails(id: string) {
       where: { id },
       include: {
         createdBy: true, // подтянем создателя
+        threads: true,
         members: {
           select: {
             id: true,

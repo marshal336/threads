@@ -2,12 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface Props {
-  accountId: string;
+  accountId?: string;
   authUserId: string;
   name: string;
   username: string;
   imgUrl: string;
-  bio: string;
+  bio: string | null;
   type?: string;
 }
 

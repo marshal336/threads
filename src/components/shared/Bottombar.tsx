@@ -4,11 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-interface IBottombarProps {
-  className?: string;
-}
 
-export default function Bottombar({ className }: IBottombarProps) {
+export default function Bottombar( ) {
   const router = useRouter();
   const pathname = usePathname();
 

@@ -13,7 +13,7 @@ export default async function Page() {
 
   return (
     <>
-      <h1 className="leading-[140%] font-bold text-white text-light-1 ">
+      <h1 className="leading-[140%] font-bold text-white ">
         Create Thread
       </h1>
       <PostThread userId={userInfo.id} />
